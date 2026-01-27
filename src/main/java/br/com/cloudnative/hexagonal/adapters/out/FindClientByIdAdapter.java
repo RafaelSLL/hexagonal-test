@@ -4,12 +4,14 @@ import br.com.cloudnative.hexagonal.adapters.out.repository.ClientRepository;
 import br.com.cloudnative.hexagonal.adapters.out.repository.entity.ClientEntity;
 import br.com.cloudnative.hexagonal.adapters.out.repository.mapper.ClientEntityMapper;
 import br.com.cloudnative.hexagonal.application.core.domain.Client;
-import br.com.cloudnative.hexagonal.application.ports.out.InsertClientOutputPort;
+import br.com.cloudnative.hexagonal.application.ports.out.FindClientByIdOutputPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
-public class InsertClientAdapter implements InsertClientOutputPort {
+public class FindClientByIdAdapter implements FindClientByIdOutputPort {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -18,8 +20,8 @@ public class InsertClientAdapter implements InsertClientOutputPort {
     private ClientEntityMapper clientEntityMapper;
 
     @Override
-    public void insert(Client client) {
-        ClientEntity clientEntity = clientEntityMapper.toClientEntity(client);
-        clientRepository.save(clientEntity);
+    public Optional<Client> find(Long id) {
+            return clientRepository.findById(id)
+                    .map(clientEntityMapper::toClient);
     }
 }
